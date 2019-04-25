@@ -15,7 +15,7 @@ export default class Home extends Component {
                     data={dataSource}
                     renderItem={({ item, index }) =>
                         <Card >
-                            <CardItem button onPress={() => this.props.navigation.navigate('VehicleDetails')}>
+                            <CardItem button onPress={() => this.props.navigation.navigate('AddVehicle')}>
                                 <View style={{backgroundColor: 'white', borderRadius: 10}}>
                                     <Image source={{ uri: item.photoUrl }} style={{ height: 100, width: 100, borderRadius: 10, marginRight: 10 }} />
                                 </View>

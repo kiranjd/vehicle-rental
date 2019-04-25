@@ -7,6 +7,7 @@ import SideMenu from './components/SideMenu';
 //UI
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import VehicleDetails from "./screens/VehicleDetails";
+import AddVehicle from "./screens/AddVehicle";
 
 const LoginStack = createStackNavigator({
   Login: { screen: Login},
@@ -25,7 +26,8 @@ const MainStack = createDrawerNavigator({
    "Create Agent": Home,
    "Update KYC": Home,
    //for navigation
-   "VehicleDetails": VehicleDetails
+   "VehicleDetails": VehicleDetails,
+   "AddVehicle": AddVehicle
 }, {
   contentComponent: SideMenu,
   drawerWidth: wp('69%'),

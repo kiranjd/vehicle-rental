@@ -11,17 +11,17 @@ export default class SideMenu extends Component {
             <Title style={{marginTop: 10}}>Vehicle Rentals</Title>
         </Header>
         <Content>
-          <ListItem icon>
+          <ListItem icon onPress={() => this.props.navigation.navigate('AddVehicle')}>
             <Left>
               <Button style={{ backgroundColor: "blue" }}>
-                <Icon active name="home" />
+                <Icon active name="car" />
               </Button>
             </Left>
             <Body>
-              <Text>Home</Text>
+              <Text>Add Vehicle</Text>
             </Body>
           </ListItem>
-          <ListItem icon>
+          <ListItem icon onPress={() => this.props.navigation.navigate('Login')}>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="close" />
