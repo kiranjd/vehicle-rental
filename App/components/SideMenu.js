@@ -21,6 +21,26 @@ export default class SideMenu extends Component {
               <Text>Add Vehicle</Text>
             </Body>
           </ListItem>
+          <ListItem icon onPress={() => this.props.navigation.navigate('CreateAgent')}>
+            <Left>
+              <Button style={{ backgroundColor: "blue" }}>
+                <Icon active name="people" />
+              </Button>
+            </Left>
+            <Body>
+              <Text>Create Agent</Text>
+            </Body>
+          </ListItem>
+          <ListItem icon onPress={() => this.props.navigation.navigate('VehicleKYC')}>
+            <Left>
+              <Button style={{ backgroundColor: "blue" }}>
+                <Icon active name="md-bookmark" />
+              </Button>
+            </Left>
+            <Body>
+              <Text>Vehicle KYC</Text>
+            </Body>
+          </ListItem>
           <ListItem icon onPress={() => this.props.navigation.navigate('Login')}>
             <Left>
               <Button style={{ backgroundColor: "red" }}>

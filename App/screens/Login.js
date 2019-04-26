@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 //UI
-import {Container, Button, Text, Form, Input, Label, Item} from 'native-base';
+import {Container, Button, Text, Form, Input, Label, Item, H1} from 'native-base';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default class Login extends Component {
@@ -10,6 +10,9 @@ export default class Login extends Component {
       <Container style={styles.container}>
         <Form>
           <View style={styles.inputGroup}>
+
+              <H1 style={{textAlign: 'center', marginBottom: 70}}>APP NAME</H1>
+
               <Item floatingLabel style={styles.input}>
                 <Label style={styles.label}>Email</Label>
                 <Input />
@@ -25,7 +28,7 @@ export default class Login extends Component {
             <Button full dark style={styles.button} onPress={() => this.props.navigation.navigate('LoggedIn')}>
               <Text> Login </Text>
             </Button>
-            <Button full style={styles.button}>
+            <Button full style={styles.button} onPress={() => this.props.navigation.navigate('Signup')}>
               <Text> Sign Up </Text>
             </Button>
           </View>
@@ -41,7 +44,7 @@ const styles = StyleSheet.create({
     margin: 20
   },
   inputGroup: {
-    marginTop: hp('25%'),
+    marginTop: hp('20%'),
     borderRadius: 15,
     padding: 0,
     
