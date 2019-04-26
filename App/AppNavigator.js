@@ -11,10 +11,12 @@ import AddVehicle from "./screens/AddVehicle";
 import CreateAgent from "./screens/CreateAgent";
 import VehicleKYC from "./screens/VehicleKYC";
 import Signup from "./screens/Signup";
+import VerifyMobile from "./screens/VerifyMobile";
 
 const LoginStack = createStackNavigator({
   Login: { screen: Login},
-  Signup: Signup
+  Signup: Signup,
+  VerifyMobile: VerifyMobile
 }, {
       headerMode: 'none',
       navigationOptions: {

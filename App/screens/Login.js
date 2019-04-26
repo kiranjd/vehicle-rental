@@ -28,7 +28,7 @@ export default class Login extends Component {
             <Button full dark style={styles.button} onPress={() => this.props.navigation.navigate('LoggedIn')}>
               <Text> Login </Text>
             </Button>
-            <Button full style={styles.button} onPress={() => this.props.navigation.navigate('Signup')}>
+            <Button full style={styles.button} onPress={() => this.props.navigation.navigate('VerifyMobile')}>
               <Text> Sign Up </Text>
             </Button>
           </View>

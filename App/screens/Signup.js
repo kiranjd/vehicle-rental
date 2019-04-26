@@ -14,7 +14,7 @@ export default class Signup extends Component {
             <Container>
                 <Header>
                     <Left>
-                        <Button onPress={() => this.props.navigation.navigate('Login')}>
+                        <Button onPress={() => this.props.navigation.navigate('VerifyMobile')}>
                             <Icon name='arrow-back' />
                         </Button>
                     </Left>
