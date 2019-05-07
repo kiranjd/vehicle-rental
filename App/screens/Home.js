@@ -7,6 +7,13 @@ import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handl
 import HeaderExport from '../components/Header';
 
 export default class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            ID: this.props.navigation.getParam('ID', '99'),
+        }
+        alert(this.state.ID)
+    }
     render() {
         return (
             <Container>
@@ -15,7 +22,7 @@ export default class Home extends Component {
                     data={dataSource}
                     renderItem={({ item, index }) =>
                         <Card >
-                            <CardItem button onPress={() => this.props.navigation.navigate('AddVehicle')}>
+                            <CardItem button onPress={() => this.props.navigation.navigate('VehicleDetails')}>
                                 <View style={{backgroundColor: 'white', borderRadius: 10}}>
                                     <Image source={{ uri: item.photoUrl }} style={{ height: 100, width: 100, borderRadius: 10, marginRight: 10 }} />
                                 </View>

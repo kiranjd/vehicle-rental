@@ -9,51 +9,111 @@ import HeaderExport from '../components/Header';
 import commonStyles from '../common/CommonStyles';
 
 export default class VerifyMobile extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            OTPSent: false,
-            numberVerified: false
+            codeSent: false,
+            codeVerified: false,
+            apiKey: 'f30710c9-6fe9-11e9-ade6-0200cd936042',
+            sessionId: '',
+            codeInput: '',
+            phoneNumber: '+91'
         }
     }
+
+
     sendOTP() {
-        let {OTPSent, numberVerified } = this.state;
-        if(!OTPSent) {
-        return (
-            <Form>
-            <Item rounded style={commonStyles.formElement}>
-                <Input placeholder='Mobile' />
-            </Item>
-            <Button rounded primary block style={commonStyles.formElement} 
-                onPress={() => {
-                    this.setState({OTPSent: true});
-                    alert('OTP Sent');
-                    }} >
-                <Text>Send OTP</Text>
-            </Button>
-        </Form>
-        );
+        let { codeSent, numberVerified, phoneNumber, codeInput } = this.state;
+        if (!codeSent) {
+            return (
+                <Form>
+                    <Item rounded style={commonStyles.formElement}>
+                        <Input
+                            placeholder='Mobile'
+                            keyboardType="number-pad"
+                            value={phoneNumber}
+                            onChangeText={value => this.setState({ phoneNumber: value })}
+                        />
+                    </Item>
+                    <Button rounded primary block style={commonStyles.formElement}
+                        onPress={this.sendSMS} >
+                        <Text>Send OTP</Text>
+                    </Button>
+                </Form>
+            );
         }
         else {
             return (
                 <Form>
-                <Item rounded style={commonStyles.formElement}>
-                    <Input placeholder='Enter the OTP' />
-                </Item>
-                <Button rounded primary block style={commonStyles.formElement} 
-                onPress={() => {
-                    this.setState({numberVerified: true});
-                    //alert('Number has been successfully verified');
-                    this.props.navigation.navigate('Signup');
-                    }} >
-                    <Text>Continue</Text>
-                </Button>
-            </Form>
+                    <Item rounded style={commonStyles.formElement}>
+                        <Input
+                            placeholder='Enter the OTP'
+                            keyboardType="number-pad"
+                            value={codeInput}
+                            onChangeText={value => this.setState({ codeInput: value })}
+                        />
+                    </Item>
+                    <Button rounded primary block style={commonStyles.formElement}
+                        onPress={this.confirmCode} >
+                        <Text>Verify OTP</Text>
+                    </Button>
+                </Form>
             );
         }
     }
 
+    sendSMS = () => {
+        const { phoneNumber, apiKey } = this.state;
+        let url = `https://2factor.in/API/V1/${apiKey}/SMS/${phoneNumber}/AUTOGEN`;
+        //alert(url);
+        //Alert.alert(url);
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.Status == 'Success') {
+                    this.setState({ codeSent: true, sessionId: responseJson.Details })
+                }
+                console.log(responseJson.Status);
+            })
+    }
+
+    confirmCode = () => {
+        const { codeInput, sessionId, apiKey, phoneNumber } = this.state;
+
+        let url = `https://2factor.in/API/V1/${apiKey}/SMS/VERIFY/${sessionId}/${codeInput}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.Status == 'Success') {
+                    Alert.alert(
+                        'OTP verified',
+                        'Press \'OK\' to continue...',
+                        [
+                            { text: 'OK', onPress: () => this.props.navigation.navigate('Signup', {phone: phoneNumber}) }
+                        ]
+                    )
+                }
+                else {
+                    alert('Incorrect OTP. Please re-enter');
+                }
+                console.log(responseJson);
+            })
+    }
+
     render() {
+
         return (
             <Container>
                 <Header>

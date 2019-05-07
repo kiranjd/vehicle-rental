@@ -7,9 +7,55 @@ import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handl
 import HeaderExport from '../components/Header';
 //styles
 import commonStyles from '../common/CommonStyles';
+//constants
+import { baseUrl } from '../common/Constants';
 
 export default class Signup extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            firstName: '',
+            lastName: '',
+            mobile: this.props.navigation.getParam('phone', '970979879'),
+            email: '',
+            password: '',
+            confirmPassword: ''
+        }
+    }
+    
+    postData = () => {
+            let {firstName, lastName, mobile, email, password, confirmPassword} = this.state;
+            if(password.length < 6) {
+                alert('Password is too small. Choose a 6 charecter password');
+            }
+            if(password != confirmPassword) {
+                alert('Password and confirm password do not match');
+                return;
+            }
+            let url = `${baseUrl}/vr/api/signup.php?name=${firstName} ${lastName}&mobile=${mobile}&email=${email}&password=${password}&userType=1`;
+            console.log(url);
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => {
+                if(response.status == 201) {
+                    alert('Your account has been created');
+                    return response.json();
+                }    
+            })
+            .then((resposeJson) => {
+                console.log(resposeJson.ID);
+                this.props.navigation.navigate('Home', {ID: resposeJson.ID});
+            })
+        }
+        
     render() {
+        let {firstName, lastName, mobile, email, password, confirmPassword} = this.state;
+        
         return (
             <Container>
                 <Header>
@@ -25,18 +71,43 @@ export default class Signup extends Component {
                 <Content style={commonStyles.container}>
                     <Form>
                         <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='First Name' />
+                            <Input 
+                                placeholder='First Name' 
+                                value={firstName}
+                                onChangeText={value => this.setState({ firstName: value })}
+                            />
                         </Item>
                         <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='Last Name' />
+                            <Input 
+                                placeholder='Last Name' 
+                                value={lastName}
+                                onChangeText={value => this.setState({ lastName: value })}
+                            />
                         </Item>
                         <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='Email' />
+                            <Input 
+                                placeholder='Email' 
+                                value={email}
+                                onChangeText={value => this.setState({ email: value })}
+                            />
                         </Item>
                         <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='Mobile' />
+                            <Input 
+                                secureTextEntry
+                                placeholder='Password' 
+                                value={password}
+                                onChangeText={value => this.setState({ password: value })}
+                            />
                         </Item>
-                        <Button rounded primary block onPress={() => this.props.navigation.navigate('LoggedIn')} style={commonStyles.formElement}>
+                        <Item rounded style={commonStyles.formElement}>
+                            <Input 
+                                secureTextEntry
+                                placeholder='Confirm Password' 
+                                value={confirmPassword}
+                                onChangeText={value => this.setState({ confirmPassword: value })}
+                            />
+                        </Item>
+                        <Button rounded primary block onPress={this.postData} style={commonStyles.formElement}>
                             <Text>Signup</Text>
                         </Button>
                     </Form>
