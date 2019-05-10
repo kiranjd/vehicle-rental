@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, FlatList, Image, Alert } from 'react-native';
+import { StyleSheet, View, FlatList, Image, Picker, Alert } from 'react-native';
 //UI
-import { Container, Button, Text, Picker, Content, Form, Input, Label, Item, Title, Body, Left, Right, Icon, Card, CardItem, Thumbnail } from 'native-base';
+import { Container, Button, Text, Content, Form, Input, Label, Item, Title, Body, Left, Right, Icon, Card, CardItem, Thumbnail } from 'native-base';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import HeaderExport from '../components/Header';
@@ -9,66 +9,129 @@ import HeaderExport from '../components/Header';
 import commonStyles from '../common/CommonStyles';
 //functionalities
 import ImagePicker from 'react-native-image-picker';
+import AsyncStorage from '@react-native-community/async-storage';
+//constants
+import { baseUrl } from '../common/Constants';
 
 const options = {
     title: 'Vehicle Image',
     storageOptions: {
-      skipBackup: true,
-      path: 'images',
+        skipBackup: true,
+        path: 'images',
     },
-  };
-  
+};
+
 export default class AddVehicle extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            avatarSource: null
+            id: '',
+            avatarSource: null,
+            regNo: '',
+            vehicleType: '',
+            modelName: '',
+            modelYear: '',
+            driverName: '',
+            driverNo: '',
         }
+    }
+    
+    async componentWillMount() {
+        const userId = await AsyncStorage.getItem('@vh_id');
+        if (userId) {
+            //alert(userId);
+          this.setState({
+            id: userId
+          });
+        }
+      }
+
+    addVehicle = () => {
+        let { regNo, vehicleType, modelName, modelYear, driverName, driverNo, id } = this.state;
+
+        if(regNo == '' || modelName == '' || modelYear == '' || driverName == '' || driverNo == '') {
+            alert('Fields cannot be empty. Make sure you have filled all the details');
+            return;
+        }
+
+        if(driverNo.length != 10) {
+            alert('Enter a valid mobile number');
+            return;
+        }
+
+        let url = `${baseUrl}/vr/api/addVehicle.php?id=${id}&regNo=${regNo}&vehicleType=${vehicleType}&modelName=${modelName}&modelYear=${modelYear}&driverName=${driverName}&driverNo=${driverNo}`;
+        console.log(url);
+        fetch(url, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                if (response.status == 201) {
+                    this.setState = ({
+                        regNo: '',
+                        vehicleType: '',
+                        modelName: '',
+                        modelYear: '',
+                        driverName: '',
+                        driverNo: '',
+                    });
+
+                    Alert.alert(
+                        'Your vehicle has been added',
+                        '',
+                        [
+                            { text: 'OK', onPress: () => this.props.navigation.navigate('Home', {id: id}) },
+                        ],
+                        { cancelable: false },
+                    );
+
+                }
+            })
     }
 
     showImage() {
         const imageSource = this.state.avatarSource;
-        if(imageSource) {
+        if (imageSource) {
             return (
                 <TouchableOpacity onPress={() => this.pickImage()} >
-                <Image source={this.state.avatarSource} style={commonStyles.imagePicker}/>
+                    <Image source={this.state.avatarSource} style={commonStyles.imagePicker} />
                 </TouchableOpacity>
             );
         }
         else {
             return (
                 <TouchableOpacity style={commonStyles.imagePicker} onPress={() => this.pickImage()}>
-                    <Text style={{textAlign: 'center', color: 'rgba(0,0,0,0.6)'}}>Click to add or capture vehicle image</Text>
+                    <Text style={{ textAlign: 'center', color: 'rgba(0,0,0,0.6)' }}>Click to add or capture vehicle image</Text>
                     <View>
-                        <Icon name='add' style={{fontSize: 50, color: 'rgba(0,0,0,0.3)'}}/>
+                        <Icon name='add' style={{ fontSize: 50, color: 'rgba(0,0,0,0.3)' }} />
                     </View>
                 </TouchableOpacity>
             );
         }
     }
-    
+
     pickImage() {
         ImagePicker.showImagePicker(options, (response) => {
             console.log('Response = ', response);
-           
+
             if (response.didCancel) {
-              console.log('User cancelled image picker');
+                console.log('User cancelled image picker');
             } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
+                console.log('ImagePicker Error: ', response.error);
             } else {
-              const source = { uri: response.uri };
-           
-              // You can also display the image using data:
-              // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-           
-              this.setState({
-                avatarSource: source,
-              });
+                const source = { uri: response.uri };
+                this.setState({
+                    avatarSource: source,
+                });
             }
-          });
+        });
     }
 
     render() {
+        let { id, avatarSource, regNo, vehicleType, modelName, modelYear, driverName, driverNo } = this.state;
         //console.log(this.state.avatarSource);
         //const imageSource = this.state.avatarSource? this.state.avatarSource: '';
         return (
@@ -77,43 +140,61 @@ export default class AddVehicle extends Component {
                 <Content style={commonStyles.container}>
                     <Form>
                         <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='Vehicle Registration Number' />
+                            <Input
+                                placeholder='Vehicle Registration Number'
+                                value={regNo}
+                                onChangeText={value => this.setState({ regNo: value })}
+                                returnKeyType='next'
+                            />
                         </Item>
                         <Item rounded style={commonStyles.formElement}>
                             <Picker
-                                mode="dropdown"
-                                placeholder="Select your SIM"
-                                placeholderStyle={{ color: "#bfc6ea" }}
-                                placeholderIconColor="#007aff"
-                            //style={{ width: undefined }}
-                            //selectedValue={this.state.selected}
-                            //onValueChange={this.onValueChange.bind(this)}
-                            >
-                                <Picker.Item label="Type of vehicle" value="key0" />
-                                <Picker.Item label="JCB" value="key1" />
-                                <Picker.Item label="Bulldozer" value="key2" />
-                                <Picker.Item label="Borewell" value="key3" />
-                                <Picker.Item label="Driller" value="key4" />
+                                selectedValue={this.state.vehicleType}
+                                style={{ height: 50, width: wp('90%') }}
+                                onValueChange={(itemValue, itemIndex) =>
+                                    this.setState({ vehicleType: itemValue })
+                                }>
+                                <Picker.Item label="Choose Vehicle Type" value="0" />
+                                <Picker.Item label="JCB" value="1" />
+                                <Picker.Item label="Bulldozer" value="2" />
+                                <Picker.Item label="Borewell" value="3" />
+                                <Picker.Item label="Driller" value="4" />
+                                <Picker.Item label="Other" value="5" />
                             </Picker>
                         </Item>
 
                         <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='Model Number' />
+                            <Input
+                                placeholder='Model Name'
+                                value={modelName}
+                                onChangeText={value => this.setState({ modelName: value })}
+                            />
                         </Item>
                         <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='Model Year' />
+                            <Input
+                                placeholder='Model Year'
+                                keyboardType='number-pad'
+                                value={modelYear}
+                                onChangeText={value => this.setState({ modelYear: value })}
+                            />
                         </Item>
                         <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='Driver Name' />
+                            <Input
+                                placeholder='Driver Name'
+                                value={driverName}
+                                onChangeText={value => this.setState({ driverName: value })}
+                            />
                         </Item>
                         <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='Driver Number' />
+                            <Input
+                                placeholder='Driver Number(10-digit mobile number)'
+                                keyboardType='number-pad'
+                                value={driverNo}
+                                onChangeText={value => this.setState({ driverNo: value })}
+                            />
                         </Item>
-                        <Item rounded style={commonStyles.formElement}>
-                            <Input placeholder='Model Number' />
-                        </Item>
-                        {this.showImage()}
-                        <Button rounded primary block onPress={() => alert('Vehicle has been added')} style={commonStyles.formElement}>
+                        {/* {this.showImage()} */}
+                        <Button rounded primary block onPress={this.addVehicle} style={commonStyles.formElement}>
                             <Text>Add Vehicle</Text>
                         </Button>
                     </Form>

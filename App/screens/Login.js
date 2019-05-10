@@ -1,17 +1,39 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 //UI
 import { Container, Button, Text, Form, Input, Label, Item, H1 } from 'native-base';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 //constants
 import { baseUrl } from '../common/Constants';
+//funtionalities
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
+    //this.props.navigation.navigate('AddVehicle');
     this.state = {
-      mobile: '9880604765',
-      password: '123456'
+      mobile: '',
+      password: ''
+    }
+  }
+
+  async componentWillMount() {
+    const userId = await AsyncStorage.getItem('@vh_id');
+    if (userId) {
+      this.setState({
+        userId,
+      });
+      this.props.navigation.navigate('Home', {ID: userId});
+    }
+  }
+
+  storeData = async (id) => {
+    try {
+      await AsyncStorage.setItem('@vh_id', `${id}`);
+      console.log('set');
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -27,6 +49,7 @@ export default class Login extends Component {
     }
 
     let url = `${baseUrl}/vr/api/login.php?mobile=${mobile}&password=${password}`;
+    console.log(url);
     fetch(url, {
       method: 'GET',
       headers: {
@@ -34,14 +57,13 @@ export default class Login extends Component {
         'Content-Type': 'application/json',
       },
     })
-      .then((response) => {
-        if (response.status == 200) {
-          return response.json();
-        }
-      })
-      .then((resposeJson) => {
-        console.log(resposeJson.ID);
-        this.props.navigation.navigate('Home', { ID: resposeJson.ID });
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        let id = responseJson.ID;
+        
+        this.storeData(id);
+        this.props.navigation.navigate('Home', { ID: id });
       })
   }
   render() {
@@ -50,8 +72,10 @@ export default class Login extends Component {
       <Container style={styles.container}>
         <Form>
           <View style={styles.inputGroup}>
+            <View style={styles.logoContainer}>
+              <Image source={require('../images/logo.png')} resizeMode='contain' style={styles.logo}/>
+            </View>
 
-            <H1 style={{ textAlign: 'center', marginBottom: 70 }}>Nandhi Enterprises</H1>
 
             <Item floatingLabel style={styles.input}>
               <Label style={styles.label}>Mobile</Label>
@@ -76,7 +100,7 @@ export default class Login extends Component {
             <Button full dark style={styles.button} onPress={this.validateUser}>
               <Text> Login </Text>
             </Button>
-            <Button full style={styles.button} onPress={() => this.props.navigation.navigate('Signup')}>
+            <Button full style={styles.button} onPress={() => this.props.navigation.navigate('VerifyMobile')}>
               <Text> Sign Up </Text>
             </Button>
           </View>
@@ -114,5 +138,13 @@ const styles = StyleSheet.create({
   label: {
     marginLeft: 10,
     color: 'rgba(0,0,0, 0.9)',
+  },
+  logo: {
+    width: 150, 
+    height: 150
+  },
+  logoContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })

@@ -3,6 +3,7 @@ package com.vehiclerental;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new AsyncStoragePackage(),
             new RNFetchBlobPackage(),
             new RNGestureHandlerPackage(),
             new ImagePickerPackage()

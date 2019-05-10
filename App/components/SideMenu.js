@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Container, Header, Content, List, Button, ListItem, Text, Icon, Left, Body, Right, Switch, Title, Footer } from 'native-base';
-
+//functionalities
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class SideMenu extends Component {
+    clearAsyncStorage = async() => {
+      alert('did');
+      AsyncStorage.clear();
+    }
+
     render() {
         return (
             <Container>
@@ -41,7 +47,10 @@ export default class SideMenu extends Component {
               <Text>Vehicle KYC</Text>
             </Body>
           </ListItem> */}
-          <ListItem icon onPress={() => this.props.navigation.navigate('Login')}>
+          <ListItem icon onPress={() => {
+              this.props.navigation.navigate('Login');
+              this.clearAsyncStorage();
+            }}>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="close" />
