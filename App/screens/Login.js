@@ -49,7 +49,7 @@ export default class Login extends Component {
     }
 
     let url = `${baseUrl}/vr/api/login.php?mobile=${mobile}&password=${password}`;
-    console.log(url);
+    alert(url);
     fetch(url, {
       method: 'GET',
       headers: {
@@ -61,7 +61,7 @@ export default class Login extends Component {
       .then((responseJson) => {
         console.log(responseJson);
         let id = responseJson.ID;
-        
+        alert(ID);
         this.storeData(id);
         this.props.navigation.navigate('Home', { ID: id });
       })

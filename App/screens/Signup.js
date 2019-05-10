@@ -9,6 +9,8 @@ import HeaderExport from '../components/Header';
 import commonStyles from '../common/CommonStyles';
 //constants
 import { baseUrl } from '../common/Constants';
+//functionalities
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Signup extends Component {
     constructor(props) {
@@ -16,12 +18,21 @@ export default class Signup extends Component {
         this.state = {
             firstName: '',
             lastName: '',
-            mobile: this.props.navigation.getParam('phone', '970979879'),
+            mobile: this.props.navigation.getParam('phone', '9709798799'),
             email: '',
             password: '',
             confirmPassword: ''
         }
     }
+
+    storeData = async (id) => {
+        try {
+          await AsyncStorage.setItem('@vh_id', `${id}`);
+          console.log('set');
+        } catch (e) {
+          console.log(e);
+        }
+      }
     
     postData = () => {
             let {firstName, lastName, mobile, email, password, confirmPassword} = this.state;
@@ -48,8 +59,10 @@ export default class Signup extends Component {
                 }    
             })
             .then((resposeJson) => {
-                console.log(resposeJson.ID);
-                this.props.navigation.navigate('Home', {ID: resposeJson.ID});
+                let id = resposeJson.ID;
+                console.log(id);
+                this.storeData(id);
+                this.props.navigation.navigate('Home', {ID: id});
             })
         }
         
