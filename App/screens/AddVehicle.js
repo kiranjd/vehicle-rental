@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, FlatList, Image, Picker, Alert } from 'react-native';
+import { StyleSheet, View, FlatList, Image, Picker, Alert, ActivityIndicator } from 'react-native';
 //UI
 import { Container, Button, Text, Content, Form, Input, Label, Item, Title, Body, Left, Right, Icon, Card, CardItem, Thumbnail } from 'native-base';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -10,6 +10,7 @@ import commonStyles from '../common/CommonStyles';
 //functionalities
 import ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-community/async-storage';
+import RNFetchBlob from 'rn-fetch-blob';
 //constants
 import { baseUrl } from '../common/Constants';
 
@@ -33,6 +34,9 @@ export default class AddVehicle extends Component {
             modelYear: '',
             driverName: '',
             driverNo: '',
+            imageSource: '',
+            data: '',
+            posting: false
         }
     }
     
@@ -47,6 +51,7 @@ export default class AddVehicle extends Component {
       }
 
     addVehicle = () => {
+        this.setState({posting: true});
         let { regNo, vehicleType, modelName, modelYear, driverName, driverNo, id } = this.state;
 
         if(regNo == '' || modelName == '' || modelYear == '' || driverName == '' || driverNo == '') {
@@ -68,16 +73,33 @@ export default class AddVehicle extends Component {
               'Content-Type': 'application/json',
             },
         })
-            .then((response) => {
-                if (response.status == 201) {
-                    this.setState = ({
-                        regNo: '',
-                        vehicleType: '',
-                        modelName: '',
-                        modelYear: '',
-                        driverName: '',
-                        driverNo: '',
-                    });
+        .then((response) => {
+            if (response.status == 201) {
+                  return response.json();
+            }
+          })
+            .then(responseJson => {
+                console.log(responseJson);
+                if (true) {
+                    let vehicleId = responseJson.id;
+                    
+                    console.log(vehicleId);
+                    let url = `${baseUrl}/vr/api/imageUpload.php`;
+                    alert(url);
+                    console.log('Image upload Url:', url);
+                    
+                    RNFetchBlob.fetch('POST', url, {
+                      'Content-Type': 'multipart/form-data',
+                    }, [
+                        { name: 'image', filename: 'image.png', type: 'image/png', data: this.state.data },
+                        { name: 'imageType', data: 'VehicleImageID' },
+                        { name: 'id', data: vehicleId }
+                      ]).then((resp) => {
+                            this.setState({posting: false});
+                 
+                      }).catch((err) => {
+                        // ...
+                      })
 
                     Alert.alert(
                         'Your vehicle has been added',
@@ -113,6 +135,11 @@ export default class AddVehicle extends Component {
         }
     }
 
+uploadImageToServer = () => {
+
+ 
+  }
+
     pickImage() {
         ImagePicker.showImagePicker(options, (response) => {
             console.log('Response = ', response);
@@ -124,16 +151,18 @@ export default class AddVehicle extends Component {
             } else {
                 const source = { uri: response.uri };
                 this.setState({
-                    avatarSource: source,
-                });
+                    ImageSource: source,
+                    data: response.data,
+                    avatarSource: source  
+                  });
             }
         });
     }
 
     render() {
-        let { id, avatarSource, regNo, vehicleType, modelName, modelYear, driverName, driverNo } = this.state;
+        let { id, avatarSource, regNo, vehicleType, modelName, modelYear, driverName, driverNo, posting } = this.state;
         //console.log(this.state.avatarSource);
-        //const imageSource = this.state.avatarSource? this.state.avatarSource: '';
+        const imageSource = this.state.avatarSource? this.state.avatarSource: '';
         return (
             <Container>
                 <HeaderExport screenName="Add Vehicle" subTitle="Enter the details" navigation={this.props.navigation} />
@@ -155,11 +184,11 @@ export default class AddVehicle extends Component {
                                     this.setState({ vehicleType: itemValue })
                                 }>
                                 <Picker.Item label="Choose Vehicle Type" value="0" />
-                                <Picker.Item label="JCB" value="1" />
-                                <Picker.Item label="Bulldozer" value="2" />
-                                <Picker.Item label="Borewell" value="3" />
-                                <Picker.Item label="Driller" value="4" />
-                                <Picker.Item label="Other" value="5" />
+                                <Picker.Item label="Borewell" value="1" />
+                                <Picker.Item label="Harvester" value="2" />
+                                <Picker.Item label="JCB" value="3" />
+                                <Picker.Item label="Tractor" value="4" />
+                                <Picker.Item label="Others" value="5" />
                             </Picker>
                         </Item>
 
@@ -193,10 +222,13 @@ export default class AddVehicle extends Component {
                                 onChangeText={value => this.setState({ driverNo: value })}
                             />
                         </Item>
-                        {/* {this.showImage()} */}
-                        <Button rounded primary block onPress={this.addVehicle} style={commonStyles.formElement}>
-                            <Text>Add Vehicle</Text>
+                        {this.showImage()}
+                        <Button rounded primary block onPress={this.addVehicle}
+                            style={commonStyles.formElement}>
+                            <Text>Add Vehicle</Text><ActivityIndicator size="large" color="#fff" animating={posting}/>
                         </Button>
+
+                        
                     </Form>
                 </Content>
             </Container>

@@ -1,1 +1,1 @@
-export const baseUrl = 'http://139.59.69.143';
+export const baseUrl = 'https://nandienterprises.ml';

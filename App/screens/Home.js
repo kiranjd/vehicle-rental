@@ -86,10 +86,10 @@ export default class Home extends Component {
                     data={dataSource}
                     renderItem={({ item, index }) =>
                         <Card >
-                            <CardItem button onPress={() => this.props.navigation.navigate('VehicleDetails')}>
-                                {/* <View style={{backgroundColor: 'white', borderRadius: 10}}>
-                                    <Image source={{ uri: item.photoUrl }} style={{ height: 100, width: 100, borderRadius: 10, marginRight: 10 }} />
-                                </View> */}
+                            <CardItem button onPress={() => this.props.navigation.navigate('VehicleDetails', {id: item.id})}>
+                                <View style={{backgroundColor: 'white', borderRadius: 10}}>
+                                    <Image source={{ uri: item.imagePath }} style={{ height: 100, width: 100, borderRadius: 10, marginRight: 10 }} />
+                                </View>
                                 <Body>
                                     <Text uppercase>{item.regNo}</Text>
                                     <Text note>Hours Worked:</Text> 
