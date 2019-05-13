@@ -13,8 +13,8 @@ export default class Login extends Component {
     super(props);
     //this.props.navigation.navigate('AddVehicle');
     this.state = {
-      mobile: '',
-      password: ''
+      mobile: '9880604765',
+      password: 'asd123'
     }
   }
 
@@ -49,7 +49,7 @@ export default class Login extends Component {
     }
 
     let url = `${baseUrl}/vr/api/login.php?mobile=${mobile}&password=${password}`;
-    //alert(url);
+    console.log(url);
     fetch(url, {
       method: 'GET',
       headers: {

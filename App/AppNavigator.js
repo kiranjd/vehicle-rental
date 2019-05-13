@@ -36,6 +36,7 @@ const MainStack = createDrawerNavigator({
 }, {
   contentComponent: SideMenu,
   drawerWidth: wp('69%'),
+  unmountInactiveRoutes: true
 }
 );
 
