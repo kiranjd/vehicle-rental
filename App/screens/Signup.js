@@ -43,7 +43,7 @@ export default class Signup extends Component {
                 alert('Password and confirm password do not match');
                 return;
             }
-            let url = `${baseUrl}/vr/api/signup.php?name=${firstName} ${lastName}&mobile=${mobile}&email=${email}&password=${password}&userType=1`;
+            let url = `${baseUrl}/vr/api/addUserData.php?name=${firstName} ${lastName}&mobile=${mobile}&email=${email}&password=${password}&userType=1`;
             console.log(url);
             fetch(url, {
                 method: 'GET',

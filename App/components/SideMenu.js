@@ -27,7 +27,7 @@ export default class SideMenu extends Component {
               <Text>Add Vehicle</Text>
             </Body>
           </ListItem>
-          {/* <ListItem icon onPress={() => this.props.navigation.navigate('CreateAgent')}>
+          <ListItem icon onPress={() => this.props.navigation.navigate('CreateAgent')}>
             <Left>
               <Button style={{ backgroundColor: "blue" }}>
                 <Icon active name="people" />
@@ -36,7 +36,7 @@ export default class SideMenu extends Component {
             <Body>
               <Text>Create Agent</Text>
             </Body>
-          </ListItem> */}
+          </ListItem>
           {/* <ListItem icon onPress={() => this.props.navigation.navigate('VehicleKYC')}>
             <Left>
               <Button style={{ backgroundColor: "blue" }}>
@@ -48,8 +48,8 @@ export default class SideMenu extends Component {
             </Body>
           </ListItem> */}
           <ListItem icon onPress={() => {
-              this.props.navigation.navigate('Login');
               this.clearAsyncStorage();
+              this.props.navigation.navigate('Login');
             }}>
             <Left>
               <Button style={{ backgroundColor: "red" }}>

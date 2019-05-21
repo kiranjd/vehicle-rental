@@ -54,7 +54,7 @@ export default class Home extends Component {
               this.setState({dataSource: resposeJson})
             })
             .catch(error => {
-                console.log(error);
+                alert(error);
                 this.setState({isLoading: false});  
             })
     }
@@ -74,7 +74,7 @@ export default class Home extends Component {
             <Container>
                 <HeaderExport screenName="Your Vehicles" navigation={this.props.navigation} />
                 <TouchableOpacity onPress={() => this.props.navigation.navigate('AddVehicle', {ID: ID})}>
-                <H3 color="black" style={{marginTop: hp('35%'), textAlign: 'center'}}>No vehicles added. Click here to add your vehicles</H3>
+                    <H3 color="black" style={{marginTop: hp('35%'), textAlign: 'center'}}>No vehicles added. Click here to add your vehicles</H3>
                 </TouchableOpacity>
             </Container>
             );
@@ -90,14 +90,19 @@ export default class Home extends Component {
                                 <View style={{backgroundColor: 'white', borderRadius: 10}}>
                                     <Image source={{ uri: item.imagePath }} style={{ height: 100, width: 100, borderRadius: 10, marginRight: 10 }} />
                                 </View>
-                                <Body>
-                                    <Text uppercase>{item.regNo}</Text>
-                                    <Text note>Hours Worked:</Text> 
-                                    <Text>{item.hoursWorked? item.hoursWorked: 0}</Text>
+                                <Body><Text uppercase>{item.regNo}</Text>
+                                <View style={{flexDirection: 'row'}}>
+                                <Text note>Hours Worked:</Text> 
+                                     <Text>{item.hoursWorked? item.hoursWorked: 0}</Text>    
+                                    </View>
+                                    <View style={{flexDirection: 'row'}}>
                                     <Text note>Driver Name:</Text> 
                                     <Text>{item.driverName}</Text>
+                                    </View>
+                                    <View style={{flexDirection: 'row'}}>
                                     <Text note>Driver Mobile:</Text> 
                                     <Text>{item.driverMobile}</Text>
+                                    </View>
                                 </Body>
                             </CardItem>
                         </Card>

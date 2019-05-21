@@ -13,8 +13,8 @@ export default class Login extends Component {
     super(props);
     //this.props.navigation.navigate('AddVehicle');
     this.state = {
-      mobile: '9880604765',
-      password: 'asd123'
+      mobile: '',
+      password: ''
     }
   }
 

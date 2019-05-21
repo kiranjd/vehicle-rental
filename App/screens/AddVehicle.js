@@ -7,12 +7,13 @@ import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handl
 import HeaderExport from '../components/Header';
 //styles
 import commonStyles from '../common/CommonStyles';
+//constants
+import { baseUrl } from '../common/Constants';
 //functionalities
 import ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from 'rn-fetch-blob';
-//constants
-import { baseUrl } from '../common/Constants';
+
 
 const options = {
     title: 'Vehicle Image',

@@ -21,7 +21,6 @@ export default class VerifyMobile extends Component {
         }
     }
 
-
     sendOTP() {
         let { codeSent, numberVerified, phoneNumber, codeInput } = this.state;
         if (!codeSent) {
